@@ -1,6 +1,45 @@
 apiVersion: v1
 entries:
+  docker-registry:
+  - apiVersion: v1
+    appVersion: 2.8.1
+    created: "2024-05-14T07:12:33.713104238Z"
+    description: A Helm chart for Docker Registry
+    digest: cd35c28a23f07b50ec8084580cc49d1f2b70735389338a34c4e127132de04df0
+    home: https://hub.docker.com/_/registry/
+    icon: https://helm.twun.io/docker-registry.png
+    maintainers:
+    - email: devin@canterberry.cc
+      name: Devin Canterberry
+      url: https://canterberry.cc/
+    name: docker-registry
+    sources:
+    - https://github.com/docker/distribution-library-image
+    urls:
+    - https://github.com/iamyeka/helm-charts/releases/download/docker-registry-2.2.2/docker-registry-2.2.2.tgz
+    version: 2.2.2
   gitlab:
+  - apiVersion: v2
+    appVersion: 15.5.1
+    created: "2024-05-14T07:12:33.850342241Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.x.x
+    description: GitLab Community Edition
+    digest: a55cc53fdfa083af66fcb077b404112b7079279387973c20ea282a806f030265
+    home: https://about.gitlab.com
+    keywords:
+    - git
+    - ci
+    - deploy
+    - issue tracker
+    - code review
+    - wiki
+    name: gitlab
+    urls:
+    - https://github.com/iamyeka/helm-charts/releases/download/gitlab-2.0.2/gitlab-2.0.2.tgz
+    version: 2.0.2
   - apiVersion: v2
     appVersion: 15.5.1
     created: "2023-01-14T13:11:22.487452552Z"
@@ -19,6 +58,86 @@ entries:
     - https://github.com/horizoncd/helm-charts/releases/download/gitlab-2.0.1/gitlab-2.0.1.tgz
     version: 2.0.1
   horizon:
+  - apiVersion: v2
+    appVersion: v2.10.0
+    created: "2024-05-14T07:12:34.041488936Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.8.0
+    - condition: gitlab.enabled
+      name: gitlab
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - minimal
+      - full
+      version: 2.0.2
+    - condition: tektoncd.enabled
+      name: tektoncd
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - minimal
+      - full
+      version: 2.1.3
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - full
+      version: 11.10.13
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - minimal
+      - full
+      version: 9.4.1
+    - condition: chartmuseum.enabled
+      name: chartmuseum
+      repository: https://chartmuseum.github.io/charts
+      tags:
+      - minimal
+      - full
+      version: 3.9.1
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      tags:
+      - full
+      version: 6.26.5
+    - condition: argo-cd.enabled
+      name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      tags:
+      - minimal
+      - full
+      version: 5.0.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - minimal
+      - full
+      version: 17.8.7
+    - condition: harbor.enabled
+      name: harbor
+      repository: https://helm.goharbor.io
+      tags:
+      - full
+      version: 1.6.3
+    - condition: docker-registry.enabled
+      name: docker-registry
+      repository: https://horizoncd.github.io/helm-charts
+      tags:
+      - minimal
+      version: ^2.2.2
+    description: A CICD DevOps Platform
+    digest: 886c47442ecd89604b048c35f64e811f1738ac8e96f486cba4f23209df0ad551
+    name: horizon
+    type: application
+    urls:
+    - https://github.com/iamyeka/helm-charts/releases/download/horizon-2.2.36/horizon-2.2.36.tgz
+    version: 2.2.36
   - apiVersion: v2
     appVersion: v2.0.2
     created: "2023-02-07T08:42:59.231591453Z"
@@ -146,6 +265,20 @@ entries:
     version: 2.0.1
   tektoncd:
   - apiVersion: v2
+    appVersion: 0.28.0
+    created: "2024-05-14T07:12:34.162218276Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.x.x
+    description: Helm chart for Tekton pipelines，Tekton triggers and Tekton dashboard.
+    digest: 6b77f592bbc5c9dabfc336a21f0805571ba649f39d859cc2689b31cef9b20145
+    name: tektoncd
+    type: application
+    urls:
+    - https://github.com/iamyeka/helm-charts/releases/download/tektoncd-2.1.3/tektoncd-2.1.3.tgz
+    version: 2.1.3
+  - apiVersion: v2
     appVersion: 0.18.1
     created: "2023-01-14T13:11:22.61804507Z"
     description: Helm chart for Tekton pipelines， Tekton triggers and Tekton dashboard.
@@ -155,4 +288,4 @@ entries:
     urls:
     - https://github.com/horizoncd/helm-charts/releases/download/tektoncd-2.0.1/tektoncd-2.0.1.tgz
     version: 2.0.1
-generated: "2023-02-07T08:42:59.231607553Z"
+generated: "2024-05-14T07:12:34.162247921Z"
