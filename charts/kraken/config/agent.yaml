@@ -1,0 +1,19 @@
+extends: /etc/kraken/config/agent/base.yaml
+tls:
+  name: kraken
+  client:
+    disabled: true
+  cas:
+    - path: /etc/tls/tls.crt
+  server:
+    disabled: false
+    cert:
+      path: /etc/tls/tls.crt
+    key:
+      path: /etc/tls/tls.key
+    passphrase:
+      path: /etc/tls/passphrase
+{{ .Values.agent.otherConfig | toYaml}}
+{{ include "trackers" . }}
+{{ include "build-index" . }}
+{{ include "metrics" . }}

@@ -1,0 +1,12 @@
+extends: /etc/kraken/config/origin/base.yaml
+{{ include "tls" . }}
+{{ include "origin-cluster" . }}
+{{ include "metrics" . }}
+backends:
+{{ with .Values.origin.extraBackends }}{{ tpl . $ | indent 2 }}{{ end }}
+
+writeback:
+  retry_interval: 100ms
+  poll_retries_interval: 250ms
+
+{{ .Values.origin.otherConfig | toYaml }}

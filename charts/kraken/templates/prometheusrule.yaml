@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: kraken-rule
+spec:
+  groups:
+    - name: kraken.rules
+      rules:
+        # kraken-agent 磁盘告警
+        - alert: KrakenAgentDiskUsageTooHigh
+          expr: disk_usage{job="kraken-agent"} / 1024 / 1024 / 1024 / {{ .Values.agent.diskSize }} * 100 > {{ .Values.agent.diskAlertThreshold }}
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            message: '{{`{{`}} $labels.pod {{`}}`}} 磁盘使用已经达到 {{`{{`}} $value | humanize {{`}}`}}%（阈值：{{ .Values.agent.diskAlertThreshold }}%），请关注！'
+        # kraken-origin 磁盘告警
+        - alert: KrakenOriginDiskUsageTooHigh
+          expr: disk_usage{job="kraken-origin"} / 1024 / 1024 / 1024 / {{ .Values.origin.diskSize }} > {{ .Values.origin.diskAlertThreshold }}
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            message: '{{`{{`}} $labels.pod {{`}}`}} 磁盘使用已经达到 {{`{{`}} $value | humanize {{`}}`}}%（阈值：{{ .Values.origin.diskAlertThreshold }}%），请关注！'
+        # kraken http 请求耗时过长 忽略internal.blobs.uploads接口的耗时 该接口用于origin之间同步Blob
+        - alert: KrakenHttpDurationHigh
+          expr: increase(kraken_http_request_latency_sum{exported_endpoint!="internal.blobs.uploads"}[5m]) / (increase(kraken_http_request_latency_count[5m]) > 0) > {{.Values.kraken.httpDurationHighThreshold }}
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            message: '{{`{{`}} $labels.pod {{`}}`}} 接口 {{`{{`}} $labels.exported_endpoint {{`}}`}} 耗时已经达到 {{`{{`}} $value | humanize {{`}}`}}s（阈值：{{.Values.kraken.httpDurationHighThreshold }}s），请关注！'
+        # kraken 请求Nos/S3报错
+        - alert: KrakenRequestHarborError
+          expr: increase(kraken_backend_http_request_latency_count{code=~"40*|50*", exported_endpoint=~".*blob.*"}[1m]) > {{.Values.kraken.requestHarborCountErrorThreshold }}
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            message: '{{`{{`}} $labels.pod {{`}}`}} 请求后端存储（Nos/S3） 在最近一分钟内出现 {{`{{`}} $value | humanize {{`}}`}}次异常（阈值：{{.Values.kraken.requestHarborCountErrorThreshold }}），请关注！'
+        # kraken 请求harbor报错
+        - alert: KrakenRequestHarborError
+          expr: increase(kraken_backend_http_request_latency_count{code=~"40*|50*", exported_endpoint!~".*blob.*"}[1m]) > {{.Values.kraken.requestHarborCountErrorThreshold }}
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            message: '{{`{{`}} $labels.pod {{`}}`}} 请求Harbor 在最近一分钟内出现 {{`{{`}} $value | humanize {{`}}`}}次异常（阈值：{{.Values.kraken.requestHarborCountErrorThreshold }}），请关注！'

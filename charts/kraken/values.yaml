@@ -1,0 +1,140 @@
+kraken:
+  repository: registry.cn-hangzhou.aliyuncs.com/clo
+  tag: v0.1.4
+  imagePullPolicy: IfNotPresent
+  registry_port: 30081
+  nodeSelector:
+  # http耗时告警阈值，单位秒
+  httpDurationHighThreshold: 3
+  # 请求harbor发生error的告警阈值
+  requestHarborCountErrorThreshold: 1
+
+tracker:
+  config: /etc/config/tracker.yaml
+  replicas: 3
+  extraVolumes:
+  extraVolumeMounts:
+  nodeSelector:
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Exists
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 1Gi
+
+build_index:
+  config: /etc/config/build-index.yaml
+  replicas: 3
+  annotations:
+  extraVolumes:
+  extraVolumeMounts:
+  initContainers:
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Exists
+  nodeSelector:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 1Gi
+  extraBackends:
+
+origin:
+  config: /etc/config/origin.yaml
+  replicas: 3
+  annotations:
+  extraVolumes:
+  extraVolumeMounts:
+  # 磁盘空间大小 单位Gi
+  diskSize: 60
+  diskAlertThreshold: 80
+  initContainers:
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Exists
+  nodeSelector:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+      ephemeral-storage: "5Gi"
+    limits:
+      cpu: 1
+      memory: 2Gi
+      ephemeral-storage: "60Gi"
+  extraBackends:
+
+  otherConfig:
+    castore:
+      capacity: 5000
+      cache_cleanup:
+        interval: 1m
+        tti: 168h
+    scheduler:
+      log:
+        timeEncoder: iso8601
+      torrentlog:
+        service_name: kraken-origin
+        path: /var/log/kraken/kraken-origin/torrent.log
+        encoding: json
+        timeEncoder: epoch
+
+proxy:
+  config: /etc/config/proxy.yaml
+  replicas: 1
+  annotations:
+  extraVolumes:
+  extraVolumeMounts:
+  initContainers:
+  tolerations:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+      operator: Exists
+  nodeSelector:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1
+      memory: 1Gi
+  ingress:
+    host: xxx
+
+agent:
+  config: /etc/config/agent.yaml
+  annotations:
+  extraVolumes:
+  extraVolumeMounts:
+  initContainers:
+  tolerations:
+    - effect: NoSchedule
+      key: node.kubernetes.io/unschedulable
+      operator: Exists
+  # 磁盘空间大小 单位Gi
+  diskSize: 60
+  diskAlertThreshold: 80
+  resources:
+    requests:
+      cpu: 100m
+      memory: 2Gi
+      ephemeral-storage: "5Gi"
+    limits:
+      cpu: 1
+      memory: 2Gi
+      ephemeral-storage: "60Gi"
+  otherConfig:
+    store:
+      cache_cleanup:
+        interval: 1m
+        tti: 24h

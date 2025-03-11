@@ -1,0 +1,8 @@
+extends: /etc/kraken/config/proxy/base.yaml
+{{ include "tls" . }}
+{{ include "build-index" . }}
+{{ include "origins" . }}
+{{ include "metrics" . }}
+
+nginx:
+  cache_dir: /tmp/kraken-proxy-nginx/

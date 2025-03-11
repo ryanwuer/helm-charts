@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kraken-agent
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kraken
+      app.kubernetes.io/component: agent
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kraken
+        app.kubernetes.io/component: agent
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      {{ with .Values.agent.annotations }}
+{{ tpl . $ | indent 8 -}}
+      {{- end }}
+    spec:
+      {{ with .Values.agent.tolerations -}}
+      tolerations:
+{{ toYaml . | indent 6 }}
+      {{- end -}}
+      {{ with .Values.agent.initContainers -}}
+      initContainers:
+{{ toYaml . | indent 6 -}}
+      {{- end }}
+      containers:
+      - name: main
+        image: {{ .Values.kraken.repository }}/kraken-agent:{{ .Values.kraken.tag }}
+        imagePullPolicy: {{ .Values.kraken.imagePullPolicy }}
+        command:
+        - /usr/bin/kraken-agent
+        - --config={{ .Values.agent.config }}
+        - --agent-server-port=80
+        - --peer-port=8080
+        - --agent-registry-port=8081
+      {{- with .Values.agent.resources }}
+        resources:
+{{- toYaml . | nindent 10 }}
+        {{- end }}
+        env:
+          - name: TZ
+            value: "Asia/Shanghai"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+        - name: tls
+          mountPath: /etc/tls
+{{ with .Values.agent.extraVolumeMounts }}{{ toYaml . | indent 8 }}{{ end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 20
+          periodSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 20
+          periodSeconds: 3
+          failureThreshold: 3
+      {{- with .Values.kraken.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: kraken
+      - name: tls
+        secret:
+          secretName: kraken-agent
+{{ with .Values.agent.extraVolumes }}{{ toYaml . | indent 6 }}{{ end }}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kraken-agent
+  labels:
+    app.kubernetes.io/name: kraken
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: kraken
+    app.kubernetes.io/component: agent
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 8081
+    nodePort: {{ .Values.kraken.registry_port }}
+    name: server
+  - name: metrics
+    port: 10740
+    targetPort: 10740
+  externalTrafficPolicy: Local

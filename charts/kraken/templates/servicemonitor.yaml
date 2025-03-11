@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kraken-metrics
+spec:
+  endpoints:
+    - interval: 5s
+      path: /metrics
+      port: metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kraken
