@@ -7,7 +7,7 @@ metadata:
     {{- include "horizon.labels" . | nindent 4 }}
   {{- if .Values.ingress.annotations }}
   annotations:
-    {{- .Values.ingress.annotations | nindent 4 }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
   {{- end }}
 spec:
   {{- if .Values.ingress.tls }}
