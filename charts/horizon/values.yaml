@@ -112,6 +112,7 @@ config:
 ingress:
   enabled: true
   pathType: ImplementationSpecific
+  annotations: {}
   hosts:
     - horizon.localtest.me
   tls: []
