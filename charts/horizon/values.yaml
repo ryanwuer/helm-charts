@@ -151,6 +151,13 @@ core:
     interval: 1m
     scrapeTimeout: 30s
     relabelings: []
+  startupProbe:
+    enabled: true
+    failureThreshold: 40
+    initialDelaySeconds: 10
+    periodSeconds: 1
+    successThreshold: 1
+    timeoutSeconds: 1
 
   grafanaDashboards:
     - name: pod
