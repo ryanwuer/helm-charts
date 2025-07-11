@@ -84,15 +84,17 @@ spec:
           successThreshold: 1
           periodSeconds: 10
           failureThreshold: 3
+        {{- if .Values.core.startupProbe.enabled }}
         startupProbe:
           httpGet:
             path: /health
             port: {{ .Values.config.serverConfig.port }}
-          timeoutSeconds: 1
-          successThreshold: 1
-          initialDelaySeconds: 10
-          periodSeconds: 1
-          failureThreshold: 40
+          initialDelaySeconds: {{ .Values.core.startupProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.core.startupProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.core.startupProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.core.startupProbe.successThreshold }}
+          failureThreshold: {{ .Values.core.startupProbe.failureThreshold }}
+        {{- end }}
         {{- if .Values.core.resources }}
         resources: {{ toYaml .Values.core.resources | nindent 10 }}
         {{- end }}
