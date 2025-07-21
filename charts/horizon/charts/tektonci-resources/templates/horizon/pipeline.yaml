@@ -124,6 +124,10 @@ spec:
     - name: deploy
       taskRef:
         name: horizon-deploy
+      {{- if .Values.horizon.deployTask.whenExpression }}
+      when:
+        {{- toYaml .Values.horizon.deployTask.whenExpression | nindent 8 }}
+      {{- end }}
       runAfter:
         - check
       params:
