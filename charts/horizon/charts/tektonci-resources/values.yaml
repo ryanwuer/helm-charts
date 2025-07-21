@@ -30,6 +30,7 @@ horizon:
       deployStep: horizoncd/base-bash:v1.0.0
     timeout:
       deployStep: 5m
+    whenExpression: []
     curlDeploy:
       connectTime: 5
       maxTime: 10
