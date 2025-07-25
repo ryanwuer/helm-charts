@@ -20,7 +20,7 @@ spec:
                   memory: 256Mi
                   cpu: 100m
             {{- with .Values.eventListener.affinity }}
-            affinity: {{ toYaml . | nindent 8 }}
+            affinity: {{ toYaml . | nindent 14 }}
             {{- end }}
   triggers:
     - bindings:
