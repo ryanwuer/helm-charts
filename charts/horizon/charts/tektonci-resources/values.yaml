@@ -522,6 +522,7 @@ gitRepos:
 #      token: 1234567890
 eventListener:
   replicas: 1
+  affinity: {}
 extraVolumeMounts: []
 # When set true, custom resources of tekton triggers like EventListener are rendered based on tekton triggers whose version is above v0.17.0.
 enableV1betaEventListener: true
