@@ -19,6 +19,9 @@ spec:
                 limits:
                   memory: 256Mi
                   cpu: 100m
+            {{- with .Values.eventListener.affinity }}
+            affinity: {{ toYaml . | nindent 8 }}
+            {{- end }}
   triggers:
     - bindings:
       - ref: horizon-taskbinding
