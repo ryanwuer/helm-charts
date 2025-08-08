@@ -1,6 +1,9 @@
 config:
   serverConfig:
     port: 8080
+  mcpConfig:
+    name: horizon
+    port: 8090
   jobConfig:
     lockName: horizon-lock
     lockNS: "{{ .Release.Namespace }}"
@@ -138,7 +141,13 @@ core:
     port: 80
   cloudEventService:
     port: 80
+  mcpService:
+    port: 80
   cloudEventIngress:
+    enabled: false
+    pathType: ImplementationSpecific
+    hosts: []
+  mcpIngress:
     enabled: false
     pathType: ImplementationSpecific
     hosts: []

@@ -1,0 +1,28 @@
+{{- if .Values.core.mcpIngress.enabled -}}
+  {{- $fullName := printf "%v-%v" (include "horizon.core" .) "mcp" -}}
+  {{- $svcPort := .Values.core.mcpService.port -}}
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+  {{- include "horizon.labels" . | nindent 4 }}
+  {{- with .Values.core.mcpIngress.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- range .Values.core.mcpIngress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if eq "true" (include "common.ingress.supportsPathType" $) }}
+            pathType: {{ $.Values.core.mcpIngress.pathType}}
+            {{- end }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" $fullName "servicePort" $svcPort "context" $)  | nindent 14 }}
+          {{- end }}
+    {{- end }}
+{{- end }}
