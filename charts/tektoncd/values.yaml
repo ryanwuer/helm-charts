@@ -88,3 +88,35 @@ configDefaults:
 
 featureFlags:
   scopeWhenExpressionsToTask: "true"
+
+# 全局 affinity 配置，适用于所有 Tekton 组件
+affinity:
+  # 节点亲和性配置
+  nodeAffinity: {}
+    # requiredDuringSchedulingIgnoredDuringExecution:
+    #   nodeSelectorTerms:
+    #     - matchExpressions:
+    #         - key: kubernetes.io/os
+    #           operator: NotIn
+    #           values:
+    #             - windows
+  
+  # Pod 亲和性配置
+  podAffinity: {}
+    # preferredDuringSchedulingIgnoredDuringExecution:
+    #   - weight: 100
+    #     podAffinityTerm:
+    #       labelSelector:
+    #         matchLabels:
+    #           app.kubernetes.io/part-of: tekton-pipelines
+    #       topologyKey: kubernetes.io/hostname
+  
+  # Pod 反亲和性配置
+  podAntiAffinity: {}
+    # preferredDuringSchedulingIgnoredDuringExecution:
+    #   - weight: 100
+    #     podAffinityTerm:
+    #       labelSelector:
+    #         matchLabels:
+    #           app.kubernetes.io/component: controller
+    #       topologyKey: kubernetes.io/hostname

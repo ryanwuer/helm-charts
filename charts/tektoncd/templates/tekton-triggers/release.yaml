@@ -924,6 +924,18 @@ spec:
         # version value replaced with inputs.params.versionTag in triggers/tekton/publish.yaml
         version: "v0.17.0"
     spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- with .nodeAffinity }}
+        nodeAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .podAffinity }}
+        podAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .podAntiAffinity }}
+        podAntiAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
       serviceAccountName: tekton-triggers-controller
       containers:
         - name: tekton-triggers-controller
@@ -1038,6 +1050,18 @@ spec:
         # version value replaced with inputs.params.versionTag in triggers/tekton/publish.yaml
         version: "v0.17.0"
     spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- with .nodeAffinity }}
+        nodeAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .podAffinity }}
+        podAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .podAntiAffinity }}
+        podAntiAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
       serviceAccountName: tekton-triggers-webhook
       containers:
         - name: webhook
