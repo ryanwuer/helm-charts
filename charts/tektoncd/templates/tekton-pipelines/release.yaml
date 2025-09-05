@@ -1075,17 +1075,8 @@ spec:
         app: tekton-pipelines-controller
         version: "v0.28.0"
     spec:
-      {{- with .Values.affinity }}
-      affinity:
-        {{- with .nodeAffinity }}
-        nodeAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .podAffinity }}
-        podAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .podAntiAffinity }}
-        podAntiAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
+      {{- with .Values.tektonPipelineController.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: tekton-pipelines-controller
       containers:
@@ -1331,17 +1322,8 @@ spec:
         app: tekton-pipelines-webhook
         version: "v0.28.0"
     spec:
-      {{- with .Values.affinity }}
-      affinity:
-        {{- with .nodeAffinity }}
-        nodeAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .podAffinity }}
-        podAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .podAntiAffinity }}
-        podAntiAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
+      {{- with .Values.tektonPipelineWebhook.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: tekton-pipelines-webhook
       containers:
