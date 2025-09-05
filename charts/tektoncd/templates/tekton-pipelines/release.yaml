@@ -1075,15 +1075,18 @@ spec:
         app: tekton-pipelines-controller
         version: "v0.28.0"
     spec:
+      {{- with .Values.affinity }}
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/os
-                    operator: NotIn
-                    values:
-                      - windows
+        {{- with .nodeAffinity }}
+        nodeAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .podAffinity }}
+        podAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .podAntiAffinity }}
+        podAntiAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
       serviceAccountName: tekton-pipelines-controller
       containers:
         - name: tekton-pipelines-controller
@@ -1328,26 +1331,18 @@ spec:
         app: tekton-pipelines-webhook
         version: "v0.28.0"
     spec:
+      {{- with .Values.affinity }}
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/os
-                    operator: NotIn
-                    values:
-                      - windows
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/name: webhook
-                    app.kubernetes.io/component: webhook
-                    app.kubernetes.io/instance: default
-                    app.kubernetes.io/part-of: tekton-pipelines
-                topologyKey: kubernetes.io/hostname
-              weight: 100
+        {{- with .nodeAffinity }}
+        nodeAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .podAffinity }}
+        podAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .podAntiAffinity }}
+        podAntiAffinity: {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
       serviceAccountName: tekton-pipelines-webhook
       containers:
         - name: webhook
