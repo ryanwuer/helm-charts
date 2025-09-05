@@ -329,17 +329,8 @@ spec:
         app.kubernetes.io/version: v0.13.0
       name: tekton-dashboard
     spec:
-      {{- with .Values.affinity }}
-      affinity:
-        {{- with .nodeAffinity }}
-        nodeAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .podAffinity }}
-        podAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .podAntiAffinity }}
-        podAntiAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
+      {{- with .Values.tektonDashboard.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - args:

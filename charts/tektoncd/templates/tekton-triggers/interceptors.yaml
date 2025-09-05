@@ -46,17 +46,8 @@ spec:
         # version value replaced with inputs.params.versionTag in triggers/tekton/publish.yaml
         version: "v0.17.0"
     spec:
-      {{- with .Values.affinity }}
-      affinity:
-        {{- with .nodeAffinity }}
-        nodeAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .podAffinity }}
-        podAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
-        {{- with .podAntiAffinity }}
-        podAntiAffinity: {{- toYaml . | nindent 10 }}
-        {{- end }}
+      {{- with .Values.tektonTriggerInterceptor.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: tekton-triggers-core-interceptors
       containers:
