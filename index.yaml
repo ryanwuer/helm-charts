@@ -925,6 +925,20 @@ entries:
   tektoncd:
   - apiVersion: v2
     appVersion: 0.28.0
+    created: "2025-09-05T08:19:54.552428979Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.x.x
+    description: Helm chart for Tekton pipelines，Tekton triggers and Tekton dashboard.
+    digest: 509261e485f9bb33e70f9d3399f536bf92d58ae8690f70705ac997768403746e
+    name: tektoncd
+    type: application
+    urls:
+    - https://github.com/ryanwuer/helm-charts/releases/download/tektoncd-2.2.0/tektoncd-2.2.0.tgz
+    version: 2.2.0
+  - apiVersion: v2
+    appVersion: 0.28.0
     created: "2024-05-14T07:12:34.162218276Z"
     dependencies:
     - name: common
@@ -947,4 +961,4 @@ entries:
     urls:
     - https://github.com/horizoncd/helm-charts/releases/download/tektoncd-2.0.1/tektoncd-2.0.1.tgz
     version: 2.0.1
-generated: "2025-08-08T08:10:05.028055944Z"
+generated: "2025-09-05T08:19:54.552476929Z"
