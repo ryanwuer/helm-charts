@@ -13,6 +13,12 @@ define extraVolumes
   {{- else if .csi }}
   csi:
     {{- toYaml .data | nindent 6 }}
+  {{- else if .secretName }}
+  secret:
+    secretName: {{ .secretName }}
+  {{- else if .configMapName }}
+  configMap:
+    name: {{ .configMapName }}
   {{- else }}
   emptyDir: {}
   {{- end }}
